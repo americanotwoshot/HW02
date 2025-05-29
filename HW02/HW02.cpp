@@ -32,16 +32,35 @@ public:
 
 class Zoo {
 private:
-    Animal* animals[10]; // 동물 객체를 저장하는 포인터 배열
+    Animal** animals; // 동물 객체를 저장하는 포인터 배열
     int animalCount = 0; // 동물원에 있는 동물의 수
+    int capacity = 10;
 
 public:
+    Zoo()
+        : animalCount(0)
+        , capacity(10) {
+        animals = new Animal*[capacity];
+    }
+
+    // 동물의 수를 재할당하는 함수
+    void resize(int newCapacity) {
+        Animal** newAnimals = new Animal*[newCapacity];
+        for (size_t i = 0; i < animalCount; i++)
+        {
+            newAnimals[i] = animals[i];
+        }
+        delete animals;
+        capacity = newCapacity;
+        animals = newAnimals;
+    }
+    
     // 동물을 동물원에 추가하는 함수
     void addAnimal(Animal* animal) {
-        if (animalCount >= 10)
+        if (animalCount >= capacity)
         {
-            cout << "There's too many Animal in zoo" << endl;
-            return;
+            // 재할당 필요
+            resize(capacity * 2);
         }
 
         animals[animalCount++] = animal;
